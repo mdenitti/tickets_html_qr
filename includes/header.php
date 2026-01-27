@@ -51,6 +51,8 @@ session_start();
                     <a class="nav-link" href="about.php">About</a>
                     <a class="nav-link" href="order.php">Order</a>
                     <a class="nav-link" href="contact.php">Contact</a>
+                    <a class="nav-link" href="logout.php">Logout</a>
+                </div>
                 </div>
                 </div>
             </div>

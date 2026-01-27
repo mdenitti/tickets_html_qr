@@ -1,7 +1,5 @@
 <?php
 include 'includes/header.php';
-$_SESSION['name'] = 'Massimo';
-$_SESSION['email'] = 'mas@mas.com';
 ?>
     <div class="container mt-2">
         <div class="row justify-content-center">
