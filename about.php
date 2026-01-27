@@ -5,7 +5,9 @@ include 'includes/header.php'
   <div class="row">
     <div class="col">
         <h1>About</h1>
-        <p>Hello <?php echo $_SESSION['email'] ?>
+        <?php if (isset($_SESSION['email'])): ?>
+        <p>Hello <?php echo $_SESSION['email'] ?></p>
+        <?php endif; ?>
     </div>
   </div>
 </div>
