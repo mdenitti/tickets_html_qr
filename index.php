@@ -8,7 +8,11 @@ $result = mysqli_query($conn,$sql);
 
 if (mysqli_num_rows($result) > 0) {
     while ($assoc = mysqli_fetch_assoc($result)) {
-        echo $assoc['name']." - ".$assoc['email']. "<hr>";
+        echo $assoc['name']." - ".$assoc['email'];
+        if (!empty($assoc['profile_pic'])) {
+            echo " <img src='".$assoc['profile_pic']."' width='50'>";
+        }
+        echo "<hr>";
     }    
 } else {
     echo "0 results";
@@ -20,7 +24,7 @@ if (mysqli_num_rows($result) > 0) {
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <h1>Register</h1>
-                <form action="generate.php" method="post">
+                <form action="generate.php" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email address</label>
                         <input type="email" class="form-control" name="email" aria-describedby="emailHelp" required>
@@ -29,6 +33,14 @@ if (mysqli_num_rows($result) > 0) {
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Password</label>
                         <input type="password" class="form-control" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="profilePic" class="form-label">Profile Picture</label>
+                        <input type="file" class="form-control" name="profile_pic" id="profilePic">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleName" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
