@@ -24,12 +24,16 @@ if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] == 0) {
     }
 }
 
-// the unsafe way; 
-$query="INSERT INTO users (name, email, password, profile_pic) VALUES ('$name','$email','$password', '$profile_pic_path')";
-if(mysqli_query($conn,$query)) {
+// minimal OOP prepared statement
+$stmt = $conn->prepare("INSERT INTO users (name, email, password, profile_pic) VALUES (?, ?, ?, ?)");
+if ($stmt && $stmt->bind_param("ssss", $name, $email, $password, $profile_pic_path) && $stmt->execute()) {
     echo "New user create successfully";
 } else {
-    echo "Error, try again: ".mysqli_error($conn);
+    echo "Error, try again: " . ($stmt ? $stmt->error : $conn->error);
+}
+
+if ($stmt) {
+    $stmt->close();
 }
 
 ?>
