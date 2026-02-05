@@ -5,9 +5,9 @@ require 'includes/conn.php';
 // Handle Registration Logic
 $message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $email = $conn->real_escape_string($_POST['email']);
     $password = $_POST['password']; // Get raw password
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $name = $conn->real_escape_string($_POST['name']);
 
     // Hash the password using password_hash() - Use bcrypt by default
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -32,16 +32,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     // Insert user into database with HASHED password
     // Using prepared statement is better, but following previous style with mysqli_query for simplicity/consistency if preferred, 
     // but hashing is the key requirement.
-    $sql_insert = "INSERT INTO users (name, email, password, profile_pic) VALUES ('$name', '$email', '$hashed_password', '$profile_pic_path')";
-    
-    if (mysqli_query($conn, $sql_insert)) {
+    $stmt = $conn->prepare("INSERT INTO users (name, email, password, profile_pic) VALUES (?, ?, ?, ?)");
+
+    if ($stmt && $stmt->bind_param("ssss", $name, $email, $hashed_password, $profile_pic_path) && $stmt->execute()) {
         $message = "New user created successfully!";
         // Store in session as requested ("use $_SESSION to store the user details")
-        $_SESSION['user_id'] = mysqli_insert_id($conn);
+        $_SESSION['user_id'] = $conn->insert_id;
         $_SESSION['email'] = $email;
         $_SESSION['name'] = $name;
     } else {
-        $message = "Error: " . $sql_insert . "<br>" . mysqli_error($conn);
+        $message = "Error: " . ($stmt ? $stmt->error : $conn->error);
+    }
+
+    if ($stmt) {
+        $stmt->close();
     }
 }
 
