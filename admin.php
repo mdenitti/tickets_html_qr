@@ -1,7 +1,10 @@
 <?php
 // Admin page: simple CSV import/export for users.
 
-include 'includes/header.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require 'includes/conn.php';
 
 // --- Basic access check (only logged-in admins) ---
@@ -44,6 +47,8 @@ if (isset($_GET['export']) && $_GET['export'] === 'users') {
     fclose($output);
     exit;
 }
+
+include 'includes/header.php';
 
 // --- IMPORT: handle CSV upload ---
 $importMessage = '';
