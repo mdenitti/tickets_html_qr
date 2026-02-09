@@ -7,14 +7,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require 'includes/conn.php';
 
-// Basic access check (only logged-in admins)
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(403);
-    exit('Forbidden');
-}
 
-$currentUserId = (int)$_SESSION['user_id'];
+$currentUserId = $_SESSION['user_id'];
 $roleResult = mysqli_query($conn, "SELECT role FROM users WHERE id = $currentUserId LIMIT 1");
+// if the query succeeded, fetch the first row and use its role value; if the row is missing, fall back to 'client'. If the query failed, also fall back to 'client'.
 $currentRole = $roleResult ? mysqli_fetch_assoc($roleResult)['role'] ?? 'client' : 'client';
 
 if ($currentRole !== 'admin') {
@@ -45,6 +41,6 @@ fputcsv($output, ['ID', 'Name', 'Email', 'Role'], ',', '"', '\\');
 foreach ($users as $user) { // e.g. $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     fputcsv($output, [$user['id'], $user['name'], $user['email'], $user['role']], ',', '"', '\\');
 }
-
+// The CSV is generated in-memory and streamed to the response at fopen('php://output', 'w') and the fputcsv(...) loop. There’s no physical file created on disk.
 fclose($output);
 exit;
