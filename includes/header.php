@@ -285,6 +285,15 @@ if (session_status() === PHP_SESSION_NONE) {
                         <a class="nav-link" href="order.php">Order</a>
                         <a class="nav-link" href="contact.php">Contact</a>
                         <a class="nav-link" href="logout.php">Logout</a>
+                        <?php
+                        // Show Admin link only to admins (only if DB conn available)
+                        if (isset($_SESSION['user_id']) && isset($conn)) {
+                            $__r = mysqli_query($conn, "SELECT role FROM users WHERE id=" . (int)$_SESSION['user_id'] . " LIMIT 1");
+                            if ($__r && ($__row = mysqli_fetch_assoc($__r)) && $__row['role'] === 'admin') {
+                                echo '<a class="nav-link" href="admin.php">⚙️ Admin</a>';
+                            }
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
