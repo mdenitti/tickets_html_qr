@@ -2,15 +2,17 @@
 // Start session first before any output
 session_start();
 
-// Include the database connection file
-require 'includes/conn.php';
+// Autoload MUST come first so all Composer classes (Dotenv, PHPMailer, etc.) are available
+require __DIR__ . '/vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
-include './vendor/autoload.php';
-
+// Load .env variables
 $dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+$dotenv->safeLoad(); // safeLoad() won't throw if .env is missing
+
+// Include the database connection file (after autoload)
+require 'includes/conn.php';
 
 // Initialize message variable
 $message = "";
